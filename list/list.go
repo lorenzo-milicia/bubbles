@@ -244,6 +244,11 @@ func (m *Model) SetFilteringEnabled(v bool) {
 	m.updateKeybindings()
 }
 
+func (m *Model) SetFilteringMode(mode FilterState) {
+	m.filterState = mode
+	m.updateKeybindings()
+}
+
 // FilteringEnabled returns whether or not filtering is enabled.
 func (m Model) FilteringEnabled() bool {
 	return m.filteringEnabled
@@ -653,10 +658,10 @@ func (m Model) itemsAsFilterItems() filteredItems {
 func (m *Model) updateKeybindings() {
 	switch m.filterState {
 	case Filtering:
-		m.KeyMap.CursorUp.SetEnabled(false)
-		m.KeyMap.CursorDown.SetEnabled(false)
-		m.KeyMap.NextPage.SetEnabled(false)
-		m.KeyMap.PrevPage.SetEnabled(false)
+		m.KeyMap.CursorUp.SetEnabled(true)
+		m.KeyMap.CursorDown.SetEnabled(true)
+		m.KeyMap.NextPage.SetEnabled(true)
+		m.KeyMap.PrevPage.SetEnabled(true)
 		m.KeyMap.GoToStart.SetEnabled(false)
 		m.KeyMap.GoToEnd.SetEnabled(false)
 		m.KeyMap.Filter.SetEnabled(false)
@@ -789,12 +794,6 @@ func (m *Model) handleBrowsing(msg tea.Msg) tea.Cmd {
 		case key.Matches(msg, m.KeyMap.Quit):
 			return tea.Quit
 
-		case key.Matches(msg, m.KeyMap.CursorUp):
-			m.CursorUp()
-
-		case key.Matches(msg, m.KeyMap.CursorDown):
-			m.CursorDown()
-
 		case key.Matches(msg, m.KeyMap.PrevPage):
 			m.Paginator.PrevPage()
 
@@ -850,6 +849,12 @@ func (m *Model) handleFiltering(msg tea.Msg) tea.Cmd {
 	// Handle keys
 	if msg, ok := msg.(tea.KeyMsg); ok {
 		switch {
+		case key.Matches(msg, m.KeyMap.CursorUp):
+			m.CursorUp()
+
+		case key.Matches(msg, m.KeyMap.CursorDown):
+			m.CursorDown()
+
 		case key.Matches(msg, m.KeyMap.CancelWhileFiltering):
 			m.resetFiltering()
 			m.KeyMap.Filter.SetEnabled(true)
