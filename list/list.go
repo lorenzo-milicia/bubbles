@@ -794,6 +794,12 @@ func (m *Model) handleBrowsing(msg tea.Msg) tea.Cmd {
 		case key.Matches(msg, m.KeyMap.Quit):
 			return tea.Quit
 
+		case key.Matches(msg, m.KeyMap.CursorUp):
+			m.CursorUp()
+
+		case key.Matches(msg, m.KeyMap.CursorDown):
+			m.CursorDown()
+
 		case key.Matches(msg, m.KeyMap.PrevPage):
 			m.Paginator.PrevPage()
 
